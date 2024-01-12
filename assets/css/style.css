@@ -91,6 +91,14 @@ main > div{
     width: 100%;
     justify-content: center;
     margin-bottom: 20px;
+    position: relative;
+}
+.input-error{
+    /* background-color: blue; */
+    color: red;
+    position: absolute;
+    align-self: center;
+    bottom: -51%;
 }
 label{
     width: 50px;
