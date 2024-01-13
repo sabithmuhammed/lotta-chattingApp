@@ -31,6 +31,7 @@ const doSignup = async () => {
     }
   } else {
     emailError.innerText = "This field is required";
+    validation = false;
   }
   if (name) {
     if (!/^[a-z ,.'-]+$/i.test(name)) {
@@ -41,6 +42,7 @@ const doSignup = async () => {
     }
   } else {
     nameError.innerText = "This field is required";
+    validation = false;
   }
 
   if (password) {
@@ -52,6 +54,7 @@ const doSignup = async () => {
     }
   } else {
     passwordError.innerText = "This field is required";
+    validation = false;
   }
   if (!validation) {
     return;
@@ -72,3 +75,54 @@ const doSignup = async () => {
     }
   }
 };
+
+const doLogin =async ()=>{
+  const email = document.querySelector("[data-lemail]").value.trim();
+  const password = document.querySelector("[data-lpassword]").value.trim();
+  const emailError = document.querySelector("[data-error-lemail]");
+  const passwordError = document.querySelector("[data-error-lpassword]");
+  const loginError = document.querySelector("[data-error-login]"); // show login error in innerText of this element
+
+  let validation = true;
+  if (email) {
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      validation = false;
+      emailError.innerText = "Invalid email address";
+    } else {
+      emailError.innerText = "";
+    }
+  } else {
+    emailError.innerText = "This field is required";
+    validation = false;
+  }
+  
+  if (password) {
+    if (password.length < 6) {
+      validation = false;
+      passwordError.innerText = "Password must contain at least 6 charecters";
+    } else {
+      passwordError.innerText = "";
+    }
+  } else {
+    passwordError.innerText = "This field is required";
+    validation = false;
+  }
+  if (!validation) {
+    return;
+  }
+  const rawData = await fetch('/login',{
+    method:"POST",
+    headers:{
+      "Content-Type":"application/json"
+    },
+    body:JSON.stringify({email,password})
+  })
+  if(rawData.ok){
+    const data = await rawData.json();
+    if(data.status === "success"){
+        chatList.classList.remove('hidden')
+        signupDiv.classList.add('hidden')
+    }
+  }
+
+}
