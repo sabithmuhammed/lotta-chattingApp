@@ -33,17 +33,20 @@
               </div>
               <div class="input-div">
                 <label for="semail"><i class="fa-solid fa-envelope"></i></label>
-                <input type="text" id="semail" placeholder="Email" />
+                <input type="text" id="semail" placeholder="Email" data-semail/>
+                <p class="input-error" data-error-semail></p>
               </div>
               <div class="input-div">
                 <label for="sname"><i class="fa-solid fa-user"></i></label>
-                <input type="text" id="sname" placeholder="Name" />
+                <input type="text" id="sname" placeholder="Name" data-sname/>
+                <p class="input-error" data-error-sname></p>
               </div>
               <div class="input-div">
                 <label for="spassword"><i class="fa-solid fa-key"></i></label>
-                <input type="password" id="spassword" placeholder="Password" />
+                <input type="password" id="spassword" placeholder="Password" data-spassword/>
+                <p class="input-error" data-error-spassword></p>
               </div>
-              <button class="btn btn-primary">Signup</button>
+              <button class="btn btn-primary" onclick="doSignup()">Signup</button>
               <p>
                 Already have an account?
                 <span class="c-primary" onclick="changeLogin('login')"
@@ -60,15 +63,19 @@
               <div class="login-image">
                 <img src="/images/background/login-bg.png" alt="" />
               </div>
+              
               <div class="input-div">
+                <p class="error-login" data-error-login></p>
                 <label for="lemail"><i class="fa-solid fa-envelope"></i></label>
-                <input type="text" id="lemail" placeholder="Email" />
+                <input type="text" id="lemail" placeholder="Email" data-lemail/>
+                <p class="input-error" data-error-lemail></p>
               </div>
               <div class="input-div">
                 <label for="lpassword"><i class="fa-solid fa-key"></i></label>
-                <input type="password" id="lpassword" placeholder="Password" />
+                <input type="password" id="lpassword" placeholder="Password" data-lpassword />
+                <p class="input-error" data-error-lpassword></p>
               </div>
-              <button class="btn btn-primary">Login</button>
+              <button class="btn btn-primary" onclick="doLogin()">Login</button>
               <p>
                 Don't have an account?
                 <span class="c-primary" onclick="changeLogin('signup')"

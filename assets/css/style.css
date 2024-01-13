@@ -91,6 +91,20 @@ main > div{
     width: 100%;
     justify-content: center;
     margin-bottom: 20px;
+    position: relative;
+}
+.error-login{
+    position: absolute;
+    align-self: center;
+    top: -52%;
+    color: red;
+}
+.input-error{
+    /* background-color: blue; */
+    color: red;
+    position: absolute;
+    align-self: center;
+    bottom: -51%;
 }
 label{
     width: 50px;
