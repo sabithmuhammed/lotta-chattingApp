@@ -17,6 +17,7 @@ const userSchema = new mongoose.Schema(
     image: {
       type: String,
       required: true,
+      default: 'User 05a.png'
     },
     is_online: {
       type: Number,
@@ -26,4 +27,4 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.Model("user", userSchema);
+module.exports = mongoose.model("user", userSchema);

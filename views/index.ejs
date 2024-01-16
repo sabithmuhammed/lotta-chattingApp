@@ -90,30 +90,26 @@
 
         <!-- chat list section start -->
         <div class="chat-list-container hidden" data-chat-list>
-          <div class="chat-list-actions"></div>
-          <div class="chat-list-div">
-            <div class="list-container">
-              <div class="pfp">
-                <div class="status status-active"></div>
-              </div>
-              <div class="name">Nazim</div>
-              <div class="new-message"></div>
-            </div>
-            <div class="list-container">
-              <div class="pfp">
-                <div class="status status-active"></div>
-              </div>
-              <div class="name">Rishal</div>
-              <div class="new-message"></div>
-            </div>
-            <div class="list-container">
-              <div class="pfp">
-                <div class="status status-active"></div>
-              </div>
-              <div class="name">Sabith</div>
-              <div class="new-message"></div>
-            </div>
+          <div class="chat-list-actions">
+            <input type="search" id="searchInput" placeholder="search users" onkeyup="doSearchUsers()">
+            <!-- <i class="fa fa-search " aria-hidden="true" style="font-size: x-large; vertical-align: -4px;"></i> -->
           </div>
+          <!-- <div class="chat-list-div">
+
+
+            <div class="list-container">
+              <div class="pfp">
+                <div class="pfp-image wh-100">
+                  <img src="/images/profile/User 05b.png" alt="">
+                </div>
+                <div class="status status-active"></div>
+              </div>
+              <div class="name">Suhail</div>
+              <div class="new-message"></div>
+            </div>
+
+          </div> -->
+          <div id="resultsList"></div>
         </div>
         <!-- chat list section end -->
 
