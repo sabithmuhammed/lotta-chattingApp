@@ -8,4 +8,6 @@ user_route.get('/',pages.initialRender);
 user_route.post('/register',pages.registerUser)
 user_route.post('/login',pages.userLogin)
 
+user_route.post('/searchUsers',pages.searchUsers)
+
 module.exports = user_route

@@ -48,9 +48,13 @@ const doSignup = async () => {
   if (password) {
     if (password.length < 6) {
       validation = false;
-      passwordError.innerText = "Password must contain at least 6 charecters";
+      passwordError.innerText = "Password must contain at least 6 characters";
     } else {
       passwordError.innerText = "";
+    }
+    if(password.includes(' ')){
+      validation = false;
+      passwordError.innerText = "Password cannot contain spaces";
     }
   } else {
     passwordError.innerText = "This field is required";
@@ -73,6 +77,12 @@ const doSignup = async () => {
         chatList.classList.remove('hidden')
         signupDiv.classList.add('hidden')
     }
+  }else{
+    const data = await rawData.json();
+    emailError.innerText = data.message
+    setTimeout(()=>{
+      emailError.innerText = ''
+    },4000)
   }
 };
 
@@ -97,7 +107,7 @@ const doLogin =async ()=>{
   }
   
   if (password) {
-    if (password.length < 6) {
+    if (password.length < 1) {  //changed for a while for easier login and logout
       validation = false;
       passwordError.innerText = "Password must contain at least 6 charecters";
     } else {
@@ -123,6 +133,62 @@ const doLogin =async ()=>{
         chatList.classList.remove('hidden')
         signupDiv.classList.add('hidden')
     }
+  }else{
+    const data = await rawData.json();
+    loginError.innerText = data.message
+    setTimeout(()=>{
+      loginError.innerText = ''
+    },5000)
   }
+ 
+
+}
+
+
+//function for dynamic searching 
+async function doSearchUsers(){
+  const searchInput = document.getElementById("searchInput");
+  const resultsList = document.getElementById("resultsList");
+  const keyToSearch = searchInput.value
+
+  fetchUsers()
+  async function fetchUsers() {
+    const response = await fetch('/searchUsers', {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ keyToSearch }),
+    })
+    const data = await response.json()
+    if(data){
+      console.log(data.listedUsers);
+      updateResults(data.listedUsers)
+    }
+}
+
+
+function updateResults(results) {
+  resultsList.innerHTML = '';
+
+  results.forEach(result => {
+    const listItem = document.createElement("div");
+    listItem.classList.add("list-container");
+
+    listItem.innerHTML = `
+      <div class="pfp">
+        <div class="pfp-image wh-100">
+          <img src="/images/profile/User 05b.png" alt="">
+        </div>
+        <div class="status ${ result.is_online == 1 ? 'status-active' : ''}"></div>
+      </div>
+      <div class="name">${result.name}</div>
+      <div class="new-message"></div>
+    `;
+
+    resultsList.appendChild(listItem);
+  });
+}
+
 
 }
