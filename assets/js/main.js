@@ -1,7 +1,8 @@
+let socket;
 const signupDiv = document.querySelector("[data-signup-div]");
 const signup = document.querySelector("[data-signup]");
 const login = document.querySelector("[data-login]");
-const chatList =document.querySelector("[data-chat-list]");
+const chatList = document.querySelector("[data-chat-list]");
 
 const changeLogin = (value) => {
   if (value === "signup") {
@@ -20,7 +21,7 @@ const doSignup = async () => {
   const emailError = document.querySelector("[data-error-semail]");
   const nameError = document.querySelector("[data-error-sname]");
   const passwordError = document.querySelector("[data-error-spassword]");
-  
+
   let validation = true;
   if (email) {
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -37,8 +38,8 @@ const doSignup = async () => {
     if (!/^[a-z ,.'-]+$/i.test(name)) {
       validation = false;
       nameError.innerText = "Invalid name";
-    }else{
-        nameError.innerText = "";
+    } else {
+      nameError.innerText = "";
     }
   } else {
     nameError.innerText = "This field is required";
@@ -52,7 +53,7 @@ const doSignup = async () => {
     } else {
       passwordError.innerText = "";
     }
-    if(password.includes(' ')){
+    if (password.includes(" ")) {
       validation = false;
       passwordError.innerText = "Password cannot contain spaces";
     }
@@ -71,22 +72,24 @@ const doSignup = async () => {
     },
     body: JSON.stringify({ email, name, password }),
   });
-  if(rawData.ok){
+  if (rawData.ok) {
     const data = await rawData.json();
-    if(data.status === "success"){
-        chatList.classList.remove('hidden')
-        signupDiv.classList.add('hidden')
+    if (data.status === "success") {
+      chatList.classList.remove("hidden");
+      signupDiv.classList.add("hidden");
+      doSocketConnection(data.userId)
+      doSearchUsers();
     }
-  }else{
+  } else {
     const data = await rawData.json();
-    emailError.innerText = data.message
-    setTimeout(()=>{
-      emailError.innerText = ''
-    },4000)
+    emailError.innerText = data.message;
+    setTimeout(() => {
+      emailError.innerText = "";
+    }, 4000);
   }
 };
 
-const doLogin =async ()=>{
+const doLogin = async () => {
   const email = document.querySelector("[data-lemail]").value.trim();
   const password = document.querySelector("[data-lpassword]").value.trim();
   const emailError = document.querySelector("[data-error-lemail]");
@@ -105,9 +108,10 @@ const doLogin =async ()=>{
     emailError.innerText = "This field is required";
     validation = false;
   }
-  
+
   if (password) {
-    if (password.length < 1) {  //changed for a while for easier login and logout
+    if (password.length < 1) {
+      //changed for a while for easier login and logout
       validation = false;
       passwordError.innerText = "Password must contain at least 6 charecters";
     } else {
@@ -120,75 +124,89 @@ const doLogin =async ()=>{
   if (!validation) {
     return;
   }
-  const rawData = await fetch('/login',{
-    method:"POST",
-    headers:{
-      "Content-Type":"application/json"
+  const rawData = await fetch("/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
     },
-    body:JSON.stringify({email,password})
-  })
-  if(rawData.ok){
+    body: JSON.stringify({ email, password }),
+  });
+  if (rawData.ok) {
     const data = await rawData.json();
-    if(data.status === "success"){
-        chatList.classList.remove('hidden')
-        signupDiv.classList.add('hidden')
+    if (data.status === "success") {
+      chatList.classList.remove("hidden");
+      signupDiv.classList.add("hidden");
+      doSocketConnection(data.userId)
+      doSearchUsers();
     }
-  }else{
+  } else {
     const data = await rawData.json();
-    loginError.innerText = data.message
-    setTimeout(()=>{
-      loginError.innerText = ''
-    },5000)
+    loginError.innerText = data.message;
+    setTimeout(() => {
+      loginError.innerText = "";
+    }, 5000);
   }
- 
+};
 
-}
-
-
-//function for dynamic searching 
-async function doSearchUsers(){
+//function for dynamic searching
+async function doSearchUsers() {
   const searchInput = document.getElementById("searchInput");
   const resultsList = document.getElementById("resultsList");
-  const keyToSearch = searchInput.value
+  const keyToSearch = searchInput.value;
 
-  fetchUsers()
+  fetchUsers();
   async function fetchUsers() {
-    const response = await fetch('/searchUsers', {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ keyToSearch }),
-    })
-    const data = await response.json()
-    if(data){
+    const response = await fetch("/searchUsers", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ keyToSearch }),
+    });
+    const data = await response.json();
+    if (data) {
       console.log(data.listedUsers);
-      updateResults(data.listedUsers)
+      updateResults(data.listedUsers);
     }
-}
+  }
 
+  function updateResults(results) {
+    resultsList.innerHTML = "";
 
-function updateResults(results) {
-  resultsList.innerHTML = '';
+    results.forEach((result) => {
+      const listItem = document.createElement("div");
+      listItem.classList.add("list-container");
 
-  results.forEach(result => {
-    const listItem = document.createElement("div");
-    listItem.classList.add("list-container");
-
-    listItem.innerHTML = `
+      listItem.innerHTML = `
       <div class="pfp">
         <div class="pfp-image wh-100">
           <img src="/images/profile/User 05b.png" alt="">
         </div>
-        <div class="status ${ result.is_online == 1 ? 'status-active' : ''}"></div>
+        <div class="status ${
+          result.is_online == 1 ? "status-active" : ""
+        }" data-user="${result._id}"></div>
       </div>
       <div class="name">${result.name}</div>
       <div class="new-message"></div>
     `;
 
-    resultsList.appendChild(listItem);
-  });
+      resultsList.appendChild(listItem);
+    });
+  }
 }
 
-
+function doSocketConnection(userId){
+  socket = io("/user-namespace", {
+    auth: {
+      userId,
+    },
+  });
+  socket.on('userOnline',(data)=>{
+    const user = document.querySelector(`[data-user="${data.userId}"]`)
+    user.classList.add('status-active')
+  })
+  socket.on('userOffline',(data)=>{
+    const user = document.querySelector(`[data-user="${data.userId}"]`)
+    user.classList.remove('status-active')
+  })
 }

@@ -28,7 +28,7 @@ const registerUser = async (req, res) => {
     const savedUser = await newUser.save()
 
     if(savedUser){
-          res.status(200).json({status:"success"})
+          res.status(200).json({status:"success",userId:savedUser._id})
     }else{
       res.status(500).json({ status: "error", message: "Failed to save user" });
     }
@@ -50,7 +50,7 @@ const userLogin = async (req, res) => {
 
     const passwordMatch = await bcrypt.compare(password, user.password);
     if(passwordMatch){
-      res.status(200).json({status:"success"})
+      res.status(200).json({status:"success",userId:user._id})
     }else{
       res.status(401).json({ status: "error", message: "Incorrect username or password" });
     }
@@ -78,7 +78,9 @@ const searchUsers = async (req,res) => {
     const { keyToSearch } = req.body
 
     const regex = new RegExp(keyToSearch, 'i');
-    const listedUsers = await User.find({ name: regex });
+    const listedUsers = await User.find({$and:[
+      {_id:{$ne:"65a7e26a7cd2ac8b872af566"}},{name:regex}
+    ]});
     res.json({listedUsers})
 
   } catch (error) {
