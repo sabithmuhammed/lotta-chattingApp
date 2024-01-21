@@ -1,5 +1,6 @@
 const express = require('express');
 const user_route = express()
+const auth =require('../middlewares/authentication')
 const {profileUpload} = require('../middlewares/multerConfig')
 const pages = require('../controllers/pages')
 

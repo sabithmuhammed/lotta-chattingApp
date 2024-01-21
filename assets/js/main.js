@@ -3,7 +3,8 @@ const signupDiv = document.querySelector("[data-signup-div]");
 const signup = document.querySelector("[data-signup]");
 const login = document.querySelector("[data-login]");
 const chatList = document.querySelector("[data-chat-list]");
-
+const chat = document.querySelector("[data-chat]");
+let receiverId = "";
 const changeLogin = (value) => {
   if (value === "signup") {
     signup.classList.remove("hidden");
@@ -77,7 +78,7 @@ const doSignup = async () => {
     if (data.status === "success") {
       chatList.classList.remove("hidden");
       signupDiv.classList.add("hidden");
-      doSocketConnection(data.userId)
+      doSocketConnection(data.userId);
       doSearchUsers();
     }
   } else {
@@ -136,7 +137,7 @@ const doLogin = async () => {
     if (data.status === "success") {
       chatList.classList.remove("hidden");
       signupDiv.classList.add("hidden");
-      doSocketConnection(data.userId)
+      doSocketConnection(data.userId);
       doSearchUsers();
     }
   } else {
@@ -177,10 +178,15 @@ async function doSearchUsers() {
       const listItem = document.createElement("div");
       listItem.classList.add("list-container");
 
+      listItem.setAttribute(
+        "onclick",
+        `openChatScreen('${result._id}','${result.name}','${result.image}')`
+      );
+
       listItem.innerHTML = `
       <div class="pfp">
         <div class="pfp-image wh-100">
-          <img src="/images/profile/User 05b.png" alt="">
+          <img src="/images/profile/${result.image}" alt="">
         </div>
         <div class="status ${
           result.is_online == 1 ? "status-active" : ""
@@ -195,18 +201,51 @@ async function doSearchUsers() {
   }
 }
 
-function doSocketConnection(userId){
+function doSocketConnection(userId) {
   socket = io("/user-namespace", {
     auth: {
       userId,
     },
   });
-  socket.on('userOnline',(data)=>{
-    const user = document.querySelector(`[data-user="${data.userId}"]`)
-    user.classList.add('status-active')
-  })
-  socket.on('userOffline',(data)=>{
-    const user = document.querySelector(`[data-user="${data.userId}"]`)
-    user.classList.remove('status-active')
-  })
+  const chatStatus = document.querySelector(`[data-chat-status]`);
+  socket.on("userOnline", (data) => {
+    const user = document.querySelector(`[data-user="${data.userId}"]`);
+    user.classList.add("status-active");
+    if (data.userId === receiverId) {
+      chatStatus.innerText = "Online";
+      chatStatus.classList.add("status-text-active");
+    }
+  });
+  socket.on("userOffline", (data) => {
+    const user = document.querySelector(`[data-user="${data.userId}"]`);
+    user.classList.remove("status-active");
+    if (data.userId === receiverId) {
+      chatStatus.innerText = "Offline";
+      chatStatus.classList.remove("status-text-active");
+    }
+  });
 }
+
+const openChatScreen = (id, name, pfp) => {
+  receiverId = id;
+  const chatHistory = document.querySelector(`[data-chat-history]`);
+  document.querySelector(`[data-chat-name]`).innerText = name;
+  document.querySelector(`[data-chat-pfp]`).src = "/images/profile/" + pfp;
+  const status = document
+    .querySelector(`[data-user="${id}"]`)
+    .classList.contains("status-active");
+  const chatStatus = document.querySelector(`[data-chat-status]`);
+  chatStatus.innerText = status ? "Online" : "Offline";
+  if (status) {
+    chatStatus.classList.add("status-text-active");
+  } else {
+    chatStatus.classList.remove("status-text-active");
+  }
+  chatList.classList.add("hidden");
+  chat.classList.remove("hidden");
+  chatHistory.scrollTop = chatHistory.scrollHeight;
+};
+const closeChat = () => {
+  chat.classList.add("hidden");
+  chatList.classList.remove("hidden");
+};

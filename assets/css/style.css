@@ -163,6 +163,7 @@ p >span{
     margin-top: 5px;
     display: flex;
     padding: 5px 20px;
+    cursor: pointer;
 }
 .pfp{
     width: 50px;
@@ -229,6 +230,9 @@ p >span{
 }
 .status-text{
     font-size: 14px;
+    color: rgb(102, 102, 102);
+}
+.status-text-active{
     color: green;
 }
 .chat-history{
@@ -283,4 +287,8 @@ footer{
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+::-webkit-scrollbar{
+    width: 0;
 }
