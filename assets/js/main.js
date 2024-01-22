@@ -249,3 +249,10 @@ const closeChat = () => {
   chat.classList.add("hidden");
   chatList.classList.remove("hidden");
 };
+
+const more = document.querySelector('[data-more]')
+more.addEventListener('click',()=>{
+  const moreMenu = document.querySelector('[data-more-menu]')
+  more.classList.toggle('more-div-active')
+  moreMenu.classList.toggle('more-actions-div-active')
+})

@@ -90,8 +90,20 @@
         <!-- chat list section start -->
         <div class="chat-list-container <%= locals.user?'':'hidden' %>" data-chat-list>
           <div class="chat-list-actions">
-            <input type="search" id="searchInput" placeholder="search users" onkeyup="doSearchUsers()">
-            <!-- <i class="fa fa-search " aria-hidden="true" style="font-size: x-large; vertical-align: -4px;"></i> -->
+            <div class="search-div">
+              <label for="searchInput">
+                <i class="fa-solid fa-magnifying-glass"></i>
+              </label>
+              <input type="search" id="searchInput" placeholder="search users" onkeyup="doSearchUsers()">
+            </div>  
+            <div class="more-div" data-more>
+              <div class="more-1 more-bar"></div>
+              <div class="more-2 more-bar"></div>
+              <div class="more-3 more-bar"></div>
+            </div>
+            <div class="more-actions-div" data-more-menu>
+
+            </div>
           </div>
           <div class="chat-list-div" id="resultsList">
 
