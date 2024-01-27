@@ -7,10 +7,11 @@
 }
 body{
     width: 100%;
-    height: 100vh;
+    height: 100dvh;
     background-color: rgb(45, 45, 68);
     display: grid;
     place-items: center;
+    scroll-behavior: smooth;
 
 }
 
@@ -51,6 +52,9 @@ body{
     background-color: rgb(255, 255, 255);
     display: flex;
     flex-direction: column;
+    background-image: url('/images/background/bg-blue.jpg');
+    background-size: cover;
+    
 }
 nav{
     height: 80px;
@@ -143,14 +147,6 @@ p{
 p >span{
     cursor: pointer;
 }
-
-
-
-.chat-list-actions{
-    width: 100%;
-    height: 40px;
-    background-color: rgb(122, 233, 244);
-}
 .chat-list-div{
     background-color: rgb(255, 255, 255);
     display: flex;
@@ -163,6 +159,7 @@ p >span{
     margin-top: 5px;
     display: flex;
     padding: 5px 20px;
+    cursor: pointer;
 }
 .pfp{
     width: 50px;
@@ -229,6 +226,9 @@ p >span{
 }
 .status-text{
     font-size: 14px;
+    color: rgb(102, 102, 102);
+}
+.status-text-active{
     color: green;
 }
 .chat-history{
@@ -279,8 +279,77 @@ footer{
     background-color: rgb(0, 149, 255);
 }
 
-.search-icon-div{
+.chat-list-actions{
+    width: 100%;
+    height: 40px;
+    background-color: rgb(122, 233, 244);
+    display: flex;
+    justify-content: space-between;
+    padding: 0 10px;
+    position: relative;
+}
+.search-div{
     display: flex;
     align-items: center;
     justify-content: center;
+}
+.search-div label{
+    background-color: white;
+    
+}
+.search-div label i{
+    color: rgb(0, 149, 255)
+}
+.more-div{
+    height: 100%;
+    width: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    padding: 5px;
+    transition: all .1s;
+    cursor: pointer;
+
+}
+.more-bar{
+    width: 100%;
+    height: 4px;
+    background-color:  rgb(0, 149, 255);
+    border-radius: 100vh;
+    transition: all .3s;
+}
+
+.more-div-active .more-2{
+    display: none;
+}
+.more-div-active .more-1{
+    transform: rotate(45deg);
+    translate: 0px 145%;
+}
+.more-div-active .more-3{
+    transform: rotate(-45deg);
+    translate: 0px -145%;
+
+}
+.more-actions-div{
+    
+    background-color: aqua;
+    position: absolute;
+    right: 10px;
+    top: 50px;
+    height: 0;
+    width: 0;
+    transition: all .3s;
+}
+.more-actions-div-active {
+    
+    width: 80%;
+    height: 300px;
+    background-color: aqua;
+    right: 10px;
+    top: 50px;
+}
+
+::-webkit-scrollbar{
+    width: 0;
 }
