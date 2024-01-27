@@ -37,8 +37,17 @@ const setOffline = async (socket) => {
     console.log(error.message);
   }
 };
+const newChat = async(socket,data)=>{
+  try {
+    socket.broadcast.emit('loadNewChat',data)
+  } catch (error) {
+    console.log(error.message);
+  }
+}
 
 module.exports = {
   setOnline,
   setOffline,
+  newChat,
+
 };

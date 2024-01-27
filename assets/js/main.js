@@ -224,11 +224,22 @@ function doSocketConnection(userId) {
       chatStatus.classList.remove("status-text-active");
     }
   });
+  socket.on('loadNewChat',(data)=>{
+    if(receiverId === data.senderId){  
+    const chatDiv = document.querySelector("[data-chat-history]");
+    const newChat = document.createElement("div");
+    newChat.setAttribute("class", "receive-text");
+    newChat.textContent = data.message;
+    chatDiv.appendChild(newChat);
+    chatDiv.scrollTop = chatDiv.scrollHeight;
+    }
+  })
 }
 
-const openChatScreen = (id, name, pfp) => {
+const openChatScreen =async (id, name, pfp) => {
   receiverId = id;
   const chatHistory = document.querySelector(`[data-chat-history]`);
+  chatHistory.innerHTML=""
   document.querySelector(`[data-chat-name]`).innerText = name;
   document.querySelector(`[data-chat-pfp]`).src = "/images/profile/" + pfp;
   const status = document
@@ -243,6 +254,18 @@ const openChatScreen = (id, name, pfp) => {
   }
   chatList.classList.add("hidden");
   chat.classList.remove("hidden");
+  const rawData = await fetch(`/load-message/${receiverId}`)
+  if(rawData.ok){
+    const data=await rawData.json();
+    if(data.status === "success"){
+      for(const entry of data.messages){
+      const newChat = document.createElement("div");
+      newChat.setAttribute("class", `${entry.receiverId===receiverId?"sent-text":"receive-text"}`);
+      newChat.textContent = entry.message;
+      chatHistory.appendChild(newChat);
+      }
+    }
+  }
   chatHistory.scrollTop = chatHistory.scrollHeight;
 };
 const closeChat = () => {
@@ -250,9 +273,40 @@ const closeChat = () => {
   chatList.classList.remove("hidden");
 };
 
-const more = document.querySelector('[data-more]')
-more.addEventListener('click',()=>{
-  const moreMenu = document.querySelector('[data-more-menu]')
-  more.classList.toggle('more-div-active')
-  moreMenu.classList.toggle('more-actions-div-active')
-})
+const more = document.querySelector("[data-more]");
+more.addEventListener("click", () => {
+  const moreMenu = document.querySelector("[data-more-menu]");
+  more.classList.toggle("more-div-active");
+  moreMenu.classList.toggle("more-actions-div-active");
+});
+const sendChat = async () => {
+  try {
+    // <div class="chat-history" data-chat-history>
+    //         <div class="sent-text">fgsfshs fjsjfgjls jfgjlsl fjgfsh</div>
+    const chatDiv = document.querySelector("[data-chat-history]");
+    const messageDiv = document.querySelector("[data-message]");
+    const message = messageDiv.value.trim();
+    if (!message) {
+      return;
+    }
+    const rawData = await fetch("/send-message", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ message, receiverId }),
+    });
+    if (rawData.ok) {
+      const data = await rawData.json();
+      if (data.status === "success") {
+        const newChat = document.createElement("div");
+        newChat.setAttribute("class", "sent-text");
+        newChat.textContent = message;
+        chatDiv.appendChild(newChat);
+        chatDiv.scrollTop = chatDiv.scrollHeight;
+        messageDiv.value = "";
+        socket.emit('newMessage',{senderId:data.senderId,message})
+      }
+    }
+  } catch (error) {}
+};

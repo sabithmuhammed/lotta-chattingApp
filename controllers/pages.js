@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const User = require("../models/userModel");
+const Chat = require("../models/chatModel");
 
 const initialRender = (req, res) => {
   try {
@@ -94,9 +95,40 @@ const searchUsers = async (req, res) => {
   }
 };
 
+const loadMessage = async (req,res)=>{
+  try {
+  const {receiverId} = req.params
+  const senderId = req.loggedUser
+  const messages = await Chat.find({$or:[
+    {senderId,receiverId},
+    {senderId:receiverId,receiverId:senderId},
+  ]})
+  res.status(200).json({status:"success",messages})
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+const sendMessage = async(req,res)=>{
+  try {
+    const senderId = req.loggedUser
+    const {message,receiverId} = req.body
+    const newChat = await new Chat({senderId,receiverId,message}).save();
+    if(newChat){
+      res.status(200).json({status:"success",senderId})
+    }
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
 module.exports = {
   initialRender,
   registerUser,
   userLogin,
   searchUsers,
+  sendMessage,
+  loadMessage,
+
+
 };

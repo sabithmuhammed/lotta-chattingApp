@@ -36,4 +36,7 @@ user.on("connection", (socket) => {
     chatController.setOffline(socket);
     console.log("user disconnected");
   });
+  socket.on('newMessage',(data)=>{
+    chatController.newChat(socket,data)
+  })
 });
