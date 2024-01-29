@@ -243,8 +243,9 @@ p >span{
     padding: 10px;
     align-self: flex-end;
     display: inline;
-    margin: 10px 5px;
+    margin: 4px 5px;
     max-width: 60%;
+    color: white;
 }
 .receive-text{
     border-radius: 0 5px 5px 0;
@@ -252,7 +253,8 @@ p >span{
     padding: 10px;
     align-self: flex-start;
     display: inline;
-    margin: 10px 5px;
+    margin: 4px 5px;
+    color: white;
 }
 .chat-input-div{
     display: flex;
