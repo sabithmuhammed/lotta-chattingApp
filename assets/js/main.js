@@ -5,6 +5,7 @@ const login = document.querySelector("[data-login]");
 const chatList = document.querySelector("[data-chat-list]");
 const chat = document.querySelector("[data-chat]");
 let receiverId = "";
+let senderId =  "";
 const changeLogin = (value) => {
   if (value === "signup") {
     signup.classList.remove("hidden");
@@ -78,6 +79,7 @@ const doSignup = async () => {
     if (data.status === "success") {
       chatList.classList.remove("hidden");
       signupDiv.classList.add("hidden");
+      senderId = data.userId;
       doSocketConnection(data.userId);
       doSearchUsers();
     }
@@ -137,6 +139,7 @@ const doLogin = async () => {
     if (data.status === "success") {
       chatList.classList.remove("hidden");
       signupDiv.classList.add("hidden");
+      senderId = data.userId;
       doSocketConnection(data.userId);
       doSearchUsers();
     }
@@ -225,7 +228,8 @@ function doSocketConnection(userId) {
     }
   });
   socket.on('loadNewChat',(data)=>{
-    if(receiverId === data.senderId){  
+    console.log(senderId,"fghjk",data.receiverId);
+    if(receiverId === data.senderId && senderId === data.receiverId){  
     const chatDiv = document.querySelector("[data-chat-history]");
     const newChat = document.createElement("div");
     newChat.setAttribute("class", "receive-text");
@@ -305,7 +309,7 @@ const sendChat = async () => {
         chatDiv.appendChild(newChat);
         chatDiv.scrollTop = chatDiv.scrollHeight;
         messageDiv.value = "";
-        socket.emit('newMessage',{senderId:data.senderId,message})
+        socket.emit('newMessage',{senderId:data.senderId,message,receiverId})
       }
     }
   } catch (error) {}
